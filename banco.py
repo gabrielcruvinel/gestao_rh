@@ -26,11 +26,13 @@ def Menu():
             nome = input("Digite o nome do Cliente a ser excluído:")
             delete(nome)
         elif escolha == 5:
-            nome = input("Digite o nome do Cliente a ser modificado:")
-            update(nome)
+            nome = input("Digite o nome do Cliente a ser Modificado:")
+            cpf = input("Digite o CPF do Cliente a ser Modificado")
+            update(nome, cpf)
         os.system('cls' if os.name == 'nt' else 'clear')
+
         Menu()
-def update(nome):
+def update(nome,cpf):
     database = 'livraria.db'
     conexao=sqlite3.connect(database)
     print("================= ALTERAÇÃO DE CADASTRO =================")
@@ -39,11 +41,11 @@ def update(nome):
     print("3 =>         ALTERAR CPF DO CLIENTE")
     escolha = int(input("DESEJA ALTERAR QUAL CAMPO DE CADASTRO?"))
     if escolha == 1:
-        query = "UPDATE cliente SET nome=?"
+        query = "UPDATE cliente SET nome=? WHERE cpf={}".format(cpf)
         try:
             cur=conexao.cursor()
-            nome = input("Digite o Nome do Cliente:")
-            cur.execute(query,(nome,))
+            nome1 = input("Digite o Nome do Cliente:")
+            cur.execute(query,(nome1,))
             conexao.commit()
             print("Nome alterado com sucesso")
         except:
@@ -51,7 +53,7 @@ def update(nome):
         cur.close()
         conexao.close()
     elif escolha == 2:
-        query = "UPDATE cliente SET telefone=?"
+        query = "UPDATE cliente SET telefone=? WHERE cpf={}".format(cpf)
         try:
             cur=conexao.cursor()
             telefone = int(input("Digite o telefone do Cliente"))
