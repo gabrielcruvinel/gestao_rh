@@ -6,13 +6,38 @@ global cur
 conexao=sqlite3.connect('livraria.db')
 cur=conexao.cursor()
 
-class Escolha():
-    def __init__(self):
-    def setEscolha(self, escolha):
-        self.__escolha = escolha
-    def getEscolha(self):
-        return self.__escolha
-class Menu(Escolha):
+# class Pessoa:
+#     def __init__(self,nome,telefone,cpf):
+#         self.nome = nome
+#         self.telefone = telefone
+#         self.cpf = cpf
+#     def setName(self, nome):
+#         self.nome = nome
+
+#     def getName(self):
+#         return self.nome
+
+#     def setTelefone(self, telefone):
+#         self.telefone = telefone
+
+#     def getTelefone(self):
+#         return self.telefone
+    
+#     def setCPF(self, cpf):
+#         self.cpf = cpf
+    
+#     def getCPF(self):
+#         return self.cpf
+
+# class Escolha():
+#     def __init__(self, escolha):
+#         int(input("DIGITE A OPÇÃO DESEJADA:"))
+#         self.escolha = escolha
+#     def setEscolha(self, escolha):
+#         self.escolha = escolha
+#     def getEscolha(self):
+#         return self.escolha
+class Menu():
     def __init__(self):
         print("|=================LIVRARIA=================|")
         print("|[1] => FUNCIONARIO                        |")
@@ -20,16 +45,18 @@ class Menu(Escolha):
         print("|[3] => LIVRO                              |")
         print("|[0] => SAIR                               |")
         print("|==========================================|")
-        Menu.opcoes(self)
-    def opcoes(self):
+        Menu.opcoesMenu(self)
+    def opcoesMenu(self):
         op = int(input("DIGITE A OPÇÃO DESEJADA:"))
-        Escolha.setEscolha(op)
         while op != 0:
             if op == 1:
                 pass
             elif op == 2:
                 Cliente()
-class Cliente(Escolha):
+        Menu()
+        cur.close()
+        conexao.close()
+class Cliente():
     def __init__(self):
         print("|=================CLIENTE=================|")
         print("|[1] => CADASTRAR CLIENTE                 |")
@@ -37,8 +64,54 @@ class Cliente(Escolha):
         print("|[3] => EXCLUIR CLIENTE DO SISTEMA        |")
         print("|[4] => MOSTRAR TODOS OS CLIENTES         |")
         print("|[0] => SAIR                              |")
-        print("|==========================================|")
-        Escolha()
+        print("|=========================================|")
+        Cliente.opcoesCliente(self)
+    def opcoesCliente(self):
+        op = int(input("DIGITE A OPÇÃO DESEJADA:"))
+        while op != 0:
+            if op == 1:
+                Cliente.createCliente(self)
+            elif op == 2:
+                Cliente.updateCliente(self)
+        Menu()
+    def createCliente(self):
+        cur.execute('''CREATE TABLE if not exists TB_Cliente(id INTEGER PRIMARY KEY AUTOINCREMENT, nome NOT NULL,telefone INTEGER,cpf text)''')
+        query = '''INSERT INTO TB_Cliente(nome, telefone, cpf) VALUES(?, ? , ?)'''
+        # self.cliente=Pessoa()
+        # self.cliente.setName(input("DIGITE O NOME DO CLIENTE A SER CADASTRADO:"))
+        # self.cliente.setTelefone(int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO:")))
+        # self.cliente.setCPF(input("DIGITE O CPF DO CLIENTE A SER CADASTRADO"))
+        nome = input("DIGITE O NOME DO CLIENTE A SER CADASTRADO:")
+        telefone = int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO:"))
+        cpf = input("DIGITE O CPF DO CLIENTE A SER CADASTRADO")
+        cur.execute(query, (nome.upper(), telefone, cpf))
+        conexao.commit()
+    
+    def updateCliente(self):
+        print("+================= ALTERAÇÃO DE CADASTRO =================+")
+        print("|1 =>         ALTERAR NOME DO CLIENTE                     |")
+        print("|2 =>         ALTERAR NUMERO DO CLIENTE                   |")
+        print("|3 =>         ALTERAR CPF DO CLIENTE                      |")
+        print("+=========================================================+")
+        escolha = int(input("DESEJA ALTERAR QUAL CAMPO DE CADASTRO?      "))
+        if escolha == 1:
+            query = "UPDATE TB_Cliente SET nome=? WHERE cpf = ?"
+            cpf = input("DIGITE O CPF DO CLIENTE A SER ALTERADO:")
+            nome = input("DIGITE O NOME DO CLIENTE:")
+            cur.execute(query,(nome.upper(),cpf, ))
+            conexao.commit()
+        elif escolha == 2:
+            query = "UPDATE TB_Cliente SET numero=? WHERE cpf=?"
+            cpf = input("DIGITE O CPF DO CLIENTE A SER ALTERADO:")
+            numero = int(input("DIGITE O NUMERO:"))
+            cur.execute(query,(numero, cpf, ))
+            conexao.commit()
+        elif escolha == 3:
+            query = "UPDATE TB_Cliente SET cpf=? where nome=?"
+            nome = input("DIGITE O NOME DO CLIENTE A SER ALTERADO:")
+            cpf = input("DIGITE O CPF:")
+            cur.execute(query,(cpf, nome.upper(),))
+        Cliente()
 # def Menu():
 #     print("*******Livraria*******\n")
 #     print("1 => Criar banco de dados")
