@@ -68,6 +68,7 @@ class Livro():
         print("|[3] => EXCLUIR LIVRO DO SISTEMA              |")
         print("|[4] => ESTOQUE                               |")
         print("|[5] => VENDER LIVRO                          |")
+        print("|[6] => CONSULTAR VALOR TOTAL DE LIVROS       |")
         print("|[0] => SAIR                                  |")
         print("|=============================================|")
         Livro.opcoesLivro(self)
@@ -89,16 +90,25 @@ class Livro():
                 Livro.deleteLivro(self)
             elif self.op == 4:
                 Livro.showAllLivros(self)
+            elif self.op == 6:
+                pass
+
+    
             Livro()
         Menu()
 
     def showAllLivros(self):
-        query = "SELECT * FROM TB_Livro"
-        query_count = "SELECT COUNT(*) FROM TB_Livro"
-        query_valor_estoque = "SELECT SUM(valor) FROM TB_Livro"
-        cur.execute(query)
-        count = cur.execute(query_count)
-        valor_estoque = cur.execute(query_valor_estoque)
+        query = '''SELECT * FROM TB_Livro'''
+        query_count = '''SELECT COUNT(*) FROM TB_Livro'''
+        query_valor_estoque = '''SELECT SUM(valor) FROM TB_Livro'''
+        # cur.execute(query)
+        cur.execute(query_count)
+        count = cur.fetchall
+        cur.execute(query_valor_estoque)
+        valor_estoque = cur.fetchall()
+        print(count)
+        print(valor_estoque)
+        input()
         print("TOTAL DE LIVROS EM ESTOQUE:", count)
         print("VALOR DO ESTOQUE:", valor_estoque)
         input("============>APERTE [ENTER] PARA SAIR<============")
