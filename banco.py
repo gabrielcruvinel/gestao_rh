@@ -6,45 +6,14 @@ global cur
 conexao=sqlite3.connect('livraria.db')
 cur=conexao.cursor()
 
-# class Pessoa:
-#     def __init__(self,nome,telefone,cpf):
-#         self.nome = nome
-#         self.telefone = telefone
-#         self.cpf = cpf
-#     def setName(self, nome):
-#         self.nome = nome
-
-#     def getName(self):
-#         return self.nome
-
-#     def setTelefone(self, telefone):
-#         self.telefone = telefone
-
-#     def getTelefone(self):
-#         return self.telefone
-    
-#     def setCPF(self, cpf):
-#         self.cpf = cpf
-    
-#     def getCPF(self):
-#         return self.cpf
-
-# class Escolha():
-#     def __init__(self, escolha):
-#         int(input("DIGITE A OPÇÃO DESEJADA:"))
-#         self.escolha = escolha
-#     def setEscolha(self, escolha):
-#         self.escolha = escolha
-#     def getEscolha(self):
-#         return self.escolha
 class Menu():
     def __init__(self):
-        print("|=================LIVRARIA=================|")
+        print("+=================LIVRARIA=================+")
         print("|[1] => FUNCIONARIO                        |")
         print("|[2] => CLIENTE                            |")
         print("|[3] => LIVRO                              |")
         print("|[0] => SAIR                               |")
-        print("|==========================================|")
+        print("+==========================================+")
         Menu.opcoesMenu(self)
     def opcoesMenu(self):
         self.op = int(input("DIGITE A OPÇÃO DESEJADA:  "))
@@ -62,15 +31,13 @@ class Menu():
 class Livro():
     def __init__(self):
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("|=================LIVRO=======================|")
+        print("+=================LIVRO=======================+")
         print("|[1] => CADASTRAR LIVRO                       |")
         print("|[2] => ATUALIZAR INFORMAÇÕES SOBRE LIVRO     |")
         print("|[3] => EXCLUIR LIVRO DO SISTEMA              |")
         print("|[4] => ESTOQUE                               |")
-        print("|[5] => VENDER LIVRO                          |")
-        print("|[6] => CONSULTAR VALOR TOTAL DE LIVROS       |")
         print("|[0] => SAIR                                  |")
-        print("|=============================================|")
+        print("+=============================================+")
         Livro.opcoesLivro(self)
     
     def opcoesLivro(self):
@@ -90,32 +57,21 @@ class Livro():
                 Livro.deleteLivro(self)
             elif self.op == 4:
                 Livro.showAllLivros(self)
-            elif self.op == 6:
-                pass
-
-    
             Livro()
         Menu()
-
     def showAllLivros(self):
         query = '''SELECT * FROM TB_Livro'''
-        query_count = '''SELECT COUNT(*) FROM TB_Livro'''
-        query_valor_estoque = '''SELECT SUM(valor) FROM TB_Livro'''
-        # cur.execute(query)
-        cur.execute(query_count)
-        count = cur.fetchall
-        cur.execute(query_valor_estoque)
-        valor_estoque = cur.fetchall()
-        print(count)
-        print(valor_estoque)
-        input()
+        cur.execute(query)
+        count = 0
+        for registro in cur.fetchall():
+            print(registro)
+            count += 1
         print("TOTAL DE LIVROS EM ESTOQUE:", count)
-        print("VALOR DO ESTOQUE:", valor_estoque)
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
 
     def deleteLivro(self):
         query = "DELETE FROM TB_Livro WHERE titulo=?"
-        titulo = input("DIGITE O NOME DO FUNCIONARIO A SER EXCLUIDO")
+        titulo = input("DIGITE O NOME DO FUNCIONARIO A SER EXCLUIDO:")
         cur.execute(query,(titulo.upper(),))
         cur.commit()
         print("LIVRO EXCLUIDO COM SUCESSO")
@@ -125,13 +81,14 @@ class Livro():
         query = ''' INSERT INTO TB_Livro(titulo, autor, editora, quantidade_estoque, valor) VALUES (?,?,?,?,?)'''
         titulo = input("DIGITE O TITULO DO LIVRO A SER CADASTRADO:")
         autor = input("DIGITE O AUTOR DO LIVRO:")
-        editora = input("DIGITE A EDITORA DO LIVRO")
+        editora = input("DIGITE A EDITORA DO LIVRO:")
         quantidade_estoque = int(input("DIGITE A QUANTIDADE DE LIVROS QUE FORAM RECEBIDOS:"))
         valor = float(input("DIGITE O VALOR DO LIVRO:"))
         cur.execute(query,(titulo.upper(), autor.upper(), editora.upper(), quantidade_estoque, valor))
         conexao.commit()
         print("LIVRO CADASTRADO COM SUCESSO")
-    
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
+
     def updateLivro(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("+================= ALTERAÇÃO DE CADASTRO DE LIVRO======================+")
@@ -159,63 +116,61 @@ class Livro():
 
     def updateValor(self):
         query = '''UPDATE TB_Livro SET valor=? where titulo=?'''
-        titulo = input("DIGITE O TITULO DO LIVRO:")
-        valor = float(input("DIGITE O VALOR DO LIVRO:"))
+        titulo = input("DIGITE O TITULO DO LIVRO: ")
+        valor = float(input("DIGITE O VALOR DO LIVRO: "))
         cur.execute(query,(valor, titulo.upper()))
         conexao.commit()
         print("ESTOQUE ALTERADO COM SUCESSO")
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
 
     def updateQuantidade(self):
         query = '''UPDATE TB_Livro set quantidade_estoque = ? where titulo=?'''
-        titulo = input("DIGITE O TITULO DO LIVRO:")
-        quantidade_estoque = int(input("DIGITE A QUANTIDADE DE LIVROS EM ESTOQUE:"))
+        titulo = input("DIGITE O TITULO DO LIVRO: ")
+        quantidade_estoque = int(input("DIGITE A QUANTIDADE DE LIVROS EM ESTOQUE: "))
         cur.execute(query,(quantidade_estoque, titulo.upper(),))
         conexao.commit()
         print("ESTOQUE ALTERADO COM SUCESSO")
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
 
     def updateEditora(self):
         query = "UPDATE TB_Livro SET editora=? where titulo=?"
-        titulo = input("DIGITE O TITULO DO LIVRO:")
-        editora = input("DIGITE A EDITORA DO LIVRO A SER ALTERADO:")
+        titulo = input("DIGITE O TITULO DO LIVRO: ")
+        editora = input("DIGITE A EDITORA DO LIVRO A SER ALTERADO: ")
         cur.execute(query,(editora.upper(), titulo.upper(),))
         conexao.commit()
         print("EDITORA ALTERADA COM SUCESSO")
-        input("APERTE [ENTER] PARA VOLTAR AO MENU ANTERIOR")
-        print("FUNCIONARIO ALTERADO COM SUCESSO")
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
 
     def updateTitulo(self):
         query = "UPDATE TB_Livro SET titulo=? WHERE autor = ?"
-        titulo = input("DIGITE O TITULO DO LIVRO SER ALTERADO:")
-        autor = input("DIGITE O AUTOR DO LIVRO:")
+        titulo = input("DIGITE O TITULO DO LIVRO SER ALTERADO: ")
+        autor = input("DIGITE O AUTOR DO LIVRO: ")
         cur.execute(query,(titulo.upper(),autor.upper(), ))
         conexao.commit()
         print("TITULO ALTERADO COM SUCESSO")
-        input("APERTE [ENTER] PARA VOLTAR AO MENU ANTERIOR")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
 
     def updateAutor(self):
         query = "UPDATE TB_Livro SET autor=? WHERE titulo=?"
-        titulo = input("DIGITE O TITULO DO LIVRO:")        
-        autor = input("DIGITE O AUTOR DO LIVRO A SER ALTERADO:")
+        titulo = input("DIGITE O TITULO DO LIVRO: ")        
+        autor = input("DIGITE O AUTOR DO LIVRO A SER ALTERADO: ")
         cur.execute(query,(autor.upper(), titulo.upper(), ))        
         conexao.commit()
         print("AUTOR ALTERADO COM SUCESSO")
-        input("APERTE [ENTER] PARA VOLTAR AO MENU ANTERIOR")                
+        input("============>APERTE [ENTER] PARA SAIR<============\n")               
 class Funcionario():
     def __init__(self):
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("|=================FUNCIONARIO=================|")
+        print("+=================FUNCIONARIO=================+")
         print("|[1] => CADASTRAR FUNCIONARIO                 |")
         print("|[2] => ATUALIZAR CADASTRO DE FUNCIONARIO     |")
         print("|[3] => EXCLUIR FUNCIONARIO DO SISTEMA        |")
         print("|[4] => MOSTRAR TODOS OS FUNCIONARIOS         |")
         print("|[0] => SAIR                                  |")
-        print("|=============================================|")
+        print("+=============================================+")
         Funcionario.opcoesFuncionario(self)
     def opcoesFuncionario(self):
-        self.op = int(input("DIGITE A OPÇÃO DESEJADA:"))
+        self.op = int(input("DIGITE A OPÇÃO DESEJADA: "))
         while self.op != 0:
             if self.op == 1:
                 cur.execute('''CREATE TABLE if not exists TB_Funcionario(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, telefone INTEGER, cpf TEXT)''')
@@ -226,13 +181,14 @@ class Funcionario():
                 Funcionario.deleteFuncionario(self)
             elif self.op == 4:
                 Funcionario.showAllfuncionarios(self)
+            input("============>APERTE [ENTER] PARA SAIR<============\n")
             Funcionario()
         Menu()
     def createFuncionario(self):
         query = ''' INSERT INTO TB_Funcionario(nome, telefone, cpf) VALUES(?,?,?)'''
-        nome = input("DIGITE O NOME DO FUNCIONARIO A SER CADASTRADO:")
-        telefone = int(input("DIGITE O TELEFONE DO FUNCIONARIO A SER CADASTRADO:"))
-        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER CADASTRADO:")
+        nome = input("DIGITE O NOME DO FUNCIONARIO A SER CADASTRADO: ")
+        telefone = int(input("DIGITE O TELEFONE DO FUNCIONARIO A SER CADASTRADO: "))
+        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER CADASTRADO: ")
         cur.execute(query, (nome.upper(), telefone, cpf))
         conexao.commit()
         print("FUNCIONARIO CADASTRADO\n")
@@ -253,38 +209,38 @@ class Funcionario():
                 Funcionario.updateNumeroFuncionario(self)
             elif self.escolha == 3:
                 Funcionario.updateCPFFuncionario(self)
-            print("FUNCIONARIO ALTERADO COM SUCESSO")
-            input("============>APERTE [ENTER] PARA SAIR<============")
+            print("FUNCIONARIO ALTERADO COM SUCESSO ")
+            input("============>APERTE [ENTER] PARA SAIR<============\n")
             Funcionario.updateFuncionario(self)
         Menu()
 
     def updateCPFFuncionario(self):
         query = "UPDATE TB_Funcionario SET cpf=? where nome=?"
-        nome = input("DIGITE O NOME DO FUNCIONARIO A SER ALTERADO:")        
-        cpf = input("DIGITE O CPF:")        
+        nome = input("DIGITE O NOME DO FUNCIONARIO A SER ALTERADO: ")        
+        cpf = input("DIGITE O CPF: ")        
         cur.execute(query,(cpf, nome.upper(),))        
         conexao.commit()        
     
     def updateNomeFuncionario(self):
         query = "UPDATE TB_Funcionario SET nome=? WHERE cpf = ?"
-        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER ALTERADO:")        
-        nome = input("DIGITE O NOME DO CLIENTE:")        
+        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER ALTERADO: ")        
+        nome = input("DIGITE O NOME DO CLIENTE: ")        
         cur.execute(query,(nome.upper(),cpf, ))        
         conexao.commit()        
     
     def updateNumeroFuncionario(self):
         query = "UPDATE TB_Funcionario SET numero=? WHERE cpf=?"
-        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER ALTERADO:")        
-        numero = int(input("DIGITE O NUMERO:"))        
+        cpf = input("DIGITE O CPF DO FUNCIONARIO A SER ALTERADO: ")        
+        numero = int(input("DIGITE O NUMERO: "))        
         cur.execute(query,(numero, cpf, ))        
         conexao.commit() 
 
     def deleteFuncionario(self):
         query = "DELETE FROM TB_Funcionario WHERE nome=?"
-        nome = input("DIGITE O NOME DO FUNCIONARIO A SER EXCLUIDO")
+        nome = input("DIGITE O NOME DO FUNCIONARIO A SER EXCLUIDO: ")
         cur.execute(query,(nome.upper(),))
         cur.commit()
-
+        
     def showAllfuncionarios(self):
         query = '''SELECT * FROM TB_Funcionario'''
         cur.execute(query)
@@ -294,18 +250,18 @@ class Funcionario():
             print(registro)
             count += 1
         print("TOTAL DE FUNCIONARIOS CADASTRADOS:", count)
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        
 
 class Cliente():
     def __init__(self):
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("|=================CLIENTE=================|")
+        print("+=================CLIENTE=================+")
         print("|[1] => CADASTRAR CLIENTE                 |")
         print("|[2] => ATUALIZAR CADASTRO DE CLIENTE     |")
         print("|[3] => EXCLUIR CLIENTE DO SISTEMA        |")
         print("|[4] => MOSTRAR TODOS OS CLIENTES         |")
         print("|[0] => SAIR                              |")
-        print("|=========================================|")
+        print("+=========================================+")
         Cliente.opcoesCliente(self)
     def opcoesCliente(self):
         self.op = int(input("DIGITE A OPÇÃO DESEJADA:  "))
@@ -323,17 +279,13 @@ class Cliente():
         Menu()
     def createCliente(self):
         query = '''INSERT INTO TB_Cliente(nome, telefone, cpf) VALUES(?, ? , ?)'''
-        # self.cliente=Pessoa()
-        # self.cliente.setName(input("DIGITE O NOME DO CLIENTE A SER CADASTRADO:"))
-        # self.cliente.setTelefone(int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO:")))
-        # self.cliente.setCPF(input("DIGITE O CPF DO CLIENTE A SER CADASTRADO"))
-        nome = input("DIGITE O NOME DO CLIENTE A SER CADASTRADO:")
-        telefone = int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO:"))
-        cpf = input("DIGITE O CPF DO CLIENTE A SER CADASTRADO:")
+        nome = input("DIGITE O NOME DO CLIENTE A SER CADASTRADO: ")
+        telefone = int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO: "))
+        cpf = input("DIGITE O CPF DO CLIENTE A SER CADASTRADO: ")
         cur.execute(query, (nome.upper(), telefone, cpf))
         conexao.commit()
         print("CLIENTE CADASTRADO\n")
-    
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
     def updateCliente(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("+================= ALTERAÇÃO DE CADASTRO =================+")
@@ -349,7 +301,7 @@ class Cliente():
         elif self.escolha == 3:
             Cliente.updateCPFCliente(self)
         print("CLIENTE ALTERADO COM SUCESSO")
-        input("============>APERTE [ENTER] PARA SAIR<============")
+        input("============>APERTE [ENTER] PARA SAIR<============\n")
         Cliente()
 
     def updateNumeroCliente(self):
