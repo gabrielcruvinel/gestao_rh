@@ -5,7 +5,34 @@ global conexao
 global cur
 conexao=sqlite3.connect('livraria.db')
 cur=conexao.cursor()
+# /------------------------------------------------------------------------/
+# |Integrantes: Gabriel Gonçalves Cruvinel                                 |
+# |             Victor Alcantara                                           |
+# |             Carlos Alexandre                                           |
+# |                                                                        |
+# |                                                                        |                              
+# \------------------------------------------------------------------------/
+class Pessoa:
+    def __init__(self,nome,telefone,cpf):
+        self.nome = nome.upper()
+        self.telefone = telefone
+        self.cpf = cpf
+    def setName(self, nome):
+        self.nome = nome.upper()
+    def getName(self):
+        return self.nome
 
+    def setTelefone(self, telefone):
+        self.telefone = telefone
+
+    def getTelefone(self):
+        return self.telefone
+    
+    def setCPF(self, cpf):
+        self.cpf = cpf
+    
+    def getCPF(self):
+        return self.cpf
 class Menu():
     def __init__(self):
         print("+=================LIVRARIA=================+")
@@ -71,9 +98,9 @@ class Livro():
 
     def deleteLivro(self):
         query = "DELETE FROM TB_Livro WHERE titulo=?"
-        titulo = input("DIGITE O NOME DO FUNCIONARIO A SER EXCLUIDO:")
+        titulo = input("DIGITE O TITULO DO LIVRO A SER EXCLUIDO:")
         cur.execute(query,(titulo.upper(),))
-        cur.commit()
+        conexao.commit()
         print("LIVRO EXCLUIDO COM SUCESSO")
         input("APERTE [ENTER] PARA VOLTAR")
 
@@ -189,7 +216,8 @@ class Funcionario():
         nome = input("DIGITE O NOME DO FUNCIONARIO A SER CADASTRADO: ")
         telefone = int(input("DIGITE O TELEFONE DO FUNCIONARIO A SER CADASTRADO: "))
         cpf = input("DIGITE O CPF DO FUNCIONARIO A SER CADASTRADO: ")
-        cur.execute(query, (nome.upper(), telefone, cpf))
+        p = Pessoa(nome, telefone, cpf)
+        cur.execute(query, (p.getName(), p.getTelefone(), p.getCPF()))
         conexao.commit()
         print("FUNCIONARIO CADASTRADO\n")
 
@@ -224,7 +252,7 @@ class Funcionario():
     def updateNomeFuncionario(self):
         query = "UPDATE TB_Funcionario SET nome=? WHERE cpf = ?"
         cpf = input("DIGITE O CPF DO FUNCIONARIO A SER ALTERADO: ")        
-        nome = input("DIGITE O NOME DO CLIENTE: ")        
+        nome = input("DIGITE O NOME DO FUNCIONARIO: ")        
         cur.execute(query,(nome.upper(),cpf, ))        
         conexao.commit()        
     
@@ -282,7 +310,8 @@ class Cliente():
         nome = input("DIGITE O NOME DO CLIENTE A SER CADASTRADO: ")
         telefone = int(input("DIGITE O TELEFONE DO CLIENTE A SER CADASTRADO: "))
         cpf = input("DIGITE O CPF DO CLIENTE A SER CADASTRADO: ")
-        cur.execute(query, (nome.upper(), telefone, cpf))
+        p = Pessoa(nome, telefone, cpf)
+        cur.execute(query, (p.getName(), p.getTelefone(), p.getCPF()))
         conexao.commit()
         print("CLIENTE CADASTRADO\n")
         input("============>APERTE [ENTER] PARA SAIR<============\n")
